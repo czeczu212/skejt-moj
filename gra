@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKATE WILANOWSKA x BAKER - PS5 EDITION</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0f0f0f;color:#fff;font-family:Arial;overflow:hidden}
+  #game{width:100vw;height:100vh;background:linear-gradient(#7ec8ff,#e8e8e8);position:relative;overflow:hidden}
+  #topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px;z-index:20}
+  .box{background:rgba(0,0,0,.8);padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.4}
+  #padStatus{background:#00c853;color:#fff;padding:8px 12px;border-radius:20px;font-weight:900;font-size:13px}
+  #padStatus.off{background:#ff1744}
+  #trickName{position:absolute;top:100px;left:50%;transform:translateX(-50%);font-size:42px;font-weight:900;color:#ff0055;text-shadow:3px 3px 0 #fff;z-index:20;text-align:center}
+  #park{position:absolute;bottom:0;width:100%;height:48%;background:#c9c9c9;border-top:6px solid #222}
+  #bowl{position:absolute;right:3%;bottom:0;width:42%;height:75%;background:#ffb6c1;border:4px solid #fff;border-radius:60% 60% 0 0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:20px;text-shadow:1px 1px 0 #000}
+  #ramp{position:absolute;left:3%;bottom:0;width:36%;height:60%;background:#ffcc00;clip-path:polygon(0 100%,100% 100%,100% 25%,0 85%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;color:#000;font-weight:900}
+  #rail{position:absolute;left:46%;bottom:22%;width:160px;height:10px;background:#444;border-radius:5px}
+  #railLabel{position:absolute;left:46%;bottom:28%;font-size:12px;background:#000;padding:3px 6px;border-radius:6px}
+  #skater{position:absolute;left:50%;bottom:48%;font-size:72px;z-index:10;transform:translateX(-50%);transition:all .18s}
+  #board{position:absolute;left:50%;bottom:45%;font-size:38px;z-index:9;transform:translateX(-50%) rotate(0deg);transition:all .18s}
+  #controls{position:absolute;bottom:12px;left:0;right:0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:20}
+  button{background:#ff0055;color:#fff;border:none;padding:13px 12px;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer}
+  button.baker{background:#000;border:2px solid red}
+  button:active{transform:scale(.93)}
+  #help{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);padding:10px 14px;border-radius:12px;font-size:12px;text-align:center;z-index:20;width:92%;max-width:700px}
+  #modBox{position:absolute;top:70px;right:12px;background:#fff;color:#000;padding:14px;border-radius:12px;display:none;z-index:30;width:240px}
+  input{width:100%;padding:9px;margin:5px 0}
+  #flick{position:absolute;top:140px;right:12px;background:rgba(0,0,0,.6);padding:8px;border-radius:10px;font-size:12px}
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="topbar">
+    <div class="box"><b>SKATE: WILANOWSKA</b><br>BAKER - <span id="bakerName">Brand Logo</span><br>PS5 CONTROLLER EDITION</div>
+    <div class="box">SCORE: <span id="score">0</span><br>COMBO: <span id="combo">x1</span><br>TRIKI: <span id="trickCount">0</span></div>
+    <div id="padStatus" class="off">PAD: NIE WYKRYTO<br>Podłącz DualSense i naciśnij X</div>
+  </div>
+  <div id="trickName"></div>
+  <div id="flick">FLICK-IT: Prawy analog ↓↑</div>
+  <div id="park"><div id="bowl">BOWL WILANOWSKA</div><div id="ramp">RAMP</div><div id="rail"></div><div id="railLabel">RAIL - L1 = GRIND</div></div>
+  <div id="skater">🧍</div>
+  <div id="board">🛹</div>
+  <div id="help">PS5: <b>X</b>=Ollie | <b>□</b>=Kickflip | <b>△</b>=Heelflip | <b>O</b>=Shove-it | <b>L1/R1</b>=Grind | <b>L2</b>=Grab | <b>Prawy analog flick</b>=Flick-It jak w Skate 4 | <b>Touchpad</b>=Mody | Klawiatura też działa: Spacja / A S D F</div>
+  <div id="modBox">
+    <b>MOJE MODY / TRIKI</b>
+    <input id="modName" placeholder="Nazwa np. Mój 360 Flip">
+    <input id="modPoints" placeholder="Punkty np. 7000" type="number">
+    <button onclick="addMod()">DODAJ MOD</button>
+    <button onclick="document.getElementById('modBox').style.display='none'">ZAMKNIJ</button>
+  </div>
+  <div id="controls">
+    <button onclick="doTrick('Ollie',1000)">X - OLLIE</button>
+    <button onclick="doTrick('Kickflip',2500)">□ KICKFLIP</button>
+    <button onclick="doTrick('Heelflip',2500)">△ HEELFLIP</button>
+    <button onclick="doTrick('360 Flip',5000)">360 FLIP</button>
+    <button onclick="doTrick('Hardflip',6000)">HARDFLIP</button>
+    <button onclick="doTrick('Nollie Kickflip',3000)">NOLLIE</button>
+    <button onclick="doTrick('Pop Shove-it',2200)">O SHOVE-IT</button>
+    <button onclick="doTrick('50-50 Grind',4000)">L1 50-50</button>
+    <button onclick="doTrick('Boardslide',4000)">R1 BOARDSLIDE</button>
+    <button onclick="doTrick('Indy Grab',3500)">L2 INDY</button>
+    <button onclick="doTrick('Superman',8000)">SUPERMAN</button>
+    <button onclick="doTrick('Inward Heelflip',5500)">INWARD</button>
+    <button class="baker" onclick="changeBaker()">BAKER: ZMIEŃ DESKĘ</button>
+    <button style="background:#000" onclick="toggleMod()">+ MÓJ MOD</button>
+  </div>
+</div>
+<script>
+let score=0, combo=1, trickCount=0, comboTimer;
+let bakers=['Brand Logo','Reynolds','Rowan Zorilla','Theotis Beasley','Figgy','T-Funk','Spanky','Brain Rabies','Library Card'];
+let bi=0;
+
+function doTrick(name,pts){
+  let total = pts * combo;
+  score += total; trickCount++;
+  document.getElementById('score').innerText = score;
+  document.getElementById('combo').innerText = 'x'+combo;
+  document.getElementById('trickCount').innerText = trickCount;
+  document.getElementById('trickName').innerText = name + ' +' + total;
+  let skater=document.getElementById('skater');
+  let board=document.getElementById('board');
+  skater.style.bottom='68%'; board.style.bottom='65%';
+  board.style.transform='translateX(-50%) rotate(360deg)';
+  combo++; document.getElementById('combo').innerText='x'+combo;
+  clearTimeout(comboTimer);
+  comboTimer=setTimeout(()=>{combo=1;document.getElementById('combo').innerText='x1';},2800);
+  setTimeout(()=>{
+    skater.style.bottom='48%'; board.style.bottom='45%';
+    board.style.transform='translateX(-50%) rotate(0deg)';
+    setTimeout(()=>document.getElementById('trickName').innerText='',900);
+  },420);
+}
+function changeBaker(){
+  bi=(bi+1)%bakers.length;
+  document.getElementById('bakerName').innerText=bakers[bi];
+  doTrick('BAKER: '+bakers[bi],500);
+}
+function toggleMod(){
+  let el=document.getElementById('modBox');
+  el.style.display = el.style.display==='block' ? 'none' : 'block';
+}
+function addMod(){
+  let n=document.getElementById('modName').value||'Mój Trik';
+  let p=parseInt(document.getElementById('modPoints').value)||5000;
+  let btn=document.createElement('button');
+  btn.innerText=n.toUpperCase();
+  btn.onclick=()=>doTrick(n,p);
+  document.getElementById('controls').appendChild(btn);
+  document.getElementById('modBox').style.display='none';
+  alert('Dodano mod: '+n);
+}
+
+// --- KLWIATURA (backup) ---
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space') doTrick('Ollie',1000);
+  if(e.key==='a'||e.key==='A') doTrick('Kickflip',2500);
+  if(e.key==='s'||e.key==='S') doTrick('Heelflip',2500);
+  if(e.key==='d'||e.key==='D') doTrick('Pop Shove-it',2200);
+  if(e.key==='f'||e.key==='F') doTrick('360 Flip',5000);
+  if(e.key==='q'||e.key==='Q') doTrick('50-50 Grind',4000);
+  if(e.key==='e'||e.key==='E') doTrick('Indy Grab',3500);
+  if(e.key==='m'||e.key==='M') toggleMod();
+});
+
+// --- PS5 DUALSENSE - GAMEPAD API ---
+let prevButtons=[];
+let lastFlick=0;
+let flickState='idle';
+
+function pollGamepad(){
+  let pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  let gp = null;
+  for(let p of pads){ if(p) {gp=p; break;} }
+  let statusEl=document.getElementById('padStatus');
+  if(gp){
+    statusEl.className='';
+    statusEl.innerHTML='PAD: '+ (gp.id.includes('DualSense') ? 'DUALSENSE PS5 ✓' : gp.id.slice(0,22)+' ✓') + '<br>Rusz analogiem lub naciśnij X';
+    // Przyciski DualSense: 0=X, 1=O, 2=□, 3=△, 4=L1, 5=R1, 6=L2, 7=R2, 8=Share/Create, 9=Options, 17=Touchpad
+    let b = gp.buttons;
+    function pressed(i){ return b[i] && b[i].pressed; }
+    function justPressed(i){
+      let now = pressed(i);
+      let was = prevButtons[i] || false;
+      prevButtons[i]=now;
+      return now && !was;
+    }
+    if(justPressed(0)) doTrick('Ollie',1000);
+    if(justPressed(2)) doTrick('Kickflip',2500);
+    if(justPressed(3)) doTrick('Heelflip',2500);
+    if(justPressed(1)) doTrick('Pop Shove-it',2200);
+    if(justPressed(4)) doTrick('50-50 Grind',4000);
+    if(justPressed(5)) doTrick('Boardslide',4000);
+    if(justPressed(6)) doTrick('Indy Grab',3500);
+    if(justPressed(7)) doTrick('Superman',8000);
+    if(justPressed(17)) toggleMod();
+    // Flick-It - prawy analog (axes 2,3)
+    let rx = gp.axes[2]||0, ry = gp.axes[3]||0;
+    let now = Date.now();
+    if(flickState==='idle' && ry > 0.7){ flickState='down'; }
+    if(flickState==='down' && ry < -0.7 && now-lastFlick>500){
+      flickState='idle'; lastFlick=now;
+      if(rx < -0.5) doTrick('Hardflip (Flick-It)',6000);
+      else if(rx > 0.5) doTrick('360 Flip (Flick-It)',5000);
+      else doTrick('Ollie (Flick-It)',1500);
+    }
+    if(flickState==='down' && Math.abs(ry)<0.2) flickState='idle';
+    // Jazda lewy analog
+    let lx = gp.axes[0]||0;
+    let skater=document.getElementById('skater');
+    let board=document.getElementById('board');
+    let cur = parseFloat(skater.style.left||'50');
+    if(Math.abs(lx)>0.2){
+      let nl = Math.max(5, Math.min(95, 50 + lx*35));
+      skater.style.left = nl+'%'; board.style.left = nl+'%';
+    }
+  } else {
+    statusEl.className='off';
+    statusEl.innerHTML='PAD: NIE WYKRYTO<br>Podłącz DualSense i naciśnij X';
+  }
+  requestAnimationFrame(pollGamepad);
+}
+window.addEventListener('gamepadconnected',e=>{ alert('Wykryto pada: '+e.gamepad.id+' - możesz grać!'); });
+pollGamepad();
+</script>
+</body>
+</html>
